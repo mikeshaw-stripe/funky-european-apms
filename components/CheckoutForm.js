@@ -49,7 +49,7 @@ const CheckoutForm = props => {
             name: "Jenny Rosen"
           }
         },
-        return_url: "http://localhost:3000"
+        return_url: `${window.location.origin}`
       }
     );
   };
