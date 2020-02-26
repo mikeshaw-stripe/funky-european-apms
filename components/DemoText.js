@@ -6,7 +6,7 @@ const DemoText = ({}) => {
       <span>
         This is a{" "}
         <a href="https://github.com/stripe-samples"> Stripe Sample </a> on how
-        to build a payment form in React to accept Bancontact.{" "}
+        to build a payment to accept common European payment methods.{" "}
         <a href="https://github.com/mikeshaw-stripe/funky-european-apms">
           View code on GitHub.
         </a>
