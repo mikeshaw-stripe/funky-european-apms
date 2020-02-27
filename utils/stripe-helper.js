@@ -1,12 +1,15 @@
 import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 
+// Creat some custom errors for if things go wrong
+class StripeError extends Error {}
+class UnknownPaymentMethodError extends Error {}
+
 // Some form of Global variable
-const paymentMethodMap = {
-  card: "Card",
+export const paymentMethodMap = {
   bancontact: "Bancontact",
+  card: "Card",
   eps: "EPS",
   giropay: "Giropay",
-  klarna: "Klarna",
   p24: "Przelewy24",
   sofort: "SOFORT"
 };
@@ -42,7 +45,7 @@ export const confirmPayment = async (
           return_url: `${window.location.origin}`
         });
         if (error) {
-          return { error };
+          throw new StripeError(error);
         }
       }
       break;
@@ -60,18 +63,61 @@ export const confirmPayment = async (
           }
         );
         if (error) {
-          return { error };
+          throw new StripeError(error);
         } else {
           return { paymentIntent };
         }
       }
       break;
-    default:
-      // Return an error if the paymentMethod is not recognised
-      return {
-        error: {
-          message: `Unknown payment method ${paymentMethod}`
+    case "eps":
+      {
+        const { error } = await stripe.confirmEpsPayment(clientSecret, {
+          payment_method: {
+            billing_details: {
+              name: "Jenny Rosen"
+            }
+          },
+          return_url: `${window.location.origin}`
+        });
+        if (error) {
+          throw new StripeError(error);
         }
-      };
+      }
+      break;
+    case "giropay":
+      {
+        const { error } = await stripe.confirmGiropayPayment(clientSecret, {
+          payment_method: {
+            billing_details: {
+              name: "Jenny Rosen"
+            }
+          },
+          return_url: `${window.location.origin}`
+        });
+        if (error) {
+          throw new StripeError(error);
+        }
+      }
+      break;
+    case "p24":
+      {
+        const { error } = await stripe.confirmP24Payment(clientSecret, {
+          payment_method: {
+            billing_details: {
+              email: "jenny.rosen@example.com"
+            }
+          },
+          return_url: `${window.location.origin}`
+        });
+        if (error) {
+          throw new StripeError(error);
+        }
+      }
+      break;
+    default:
+      // Throw an error if the paymentMethod is not recognised
+      throw new UnknownPaymentMethodError(
+        `Unknown payment method ${paymentMethod}`
+      );
   }
 };

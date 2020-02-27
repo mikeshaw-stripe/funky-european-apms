@@ -74,25 +74,25 @@ const CheckoutForm = props => {
       /* Rather than having every single Stripe.js call here for all payment methods
       I am using a helper function in ../utils/stripe-helper.js to give a single 
       "confirmPayment" interface */
-      const { error, paymentIntent } = await confirmPayment(
-        stripe,
-        elements,
-        paymentIntentObj.client_secret,
-        paymentMethod
-      );
+      try {
+        const { paymentIntent } = await confirmPayment(
+          stripe,
+          elements,
+          paymentIntentObj.client_secret,
+          paymentMethod
+        );
 
-      // If we got an error show the message and re-enabled the buttons
-      if (error) {
-        setError(error.message);
-        setDisabled(false);
-        setProcessing(false);
-      }
-
-      /* If we got a PaymetIntent then store it in the state (which will 
+        /* If we got a PaymetIntent then store it in the state (which will 
         cause the useEffect hook to fire and fetch the PaymentIntent 
         status from the backend) */
-      if (paymentIntent) {
-        setPaymentIntent(paymentIntent);
+        if (paymentIntent) {
+          setPaymentIntent(paymentIntent);
+        }
+      } catch (err) {
+        // If we got an error show the message and re-enabled the buttons
+        setError(err.message);
+        setDisabled(false);
+        setProcessing(false);
       }
     }
   };

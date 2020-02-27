@@ -1,4 +1,5 @@
 import React from "react";
+import { paymentMethodMap } from "../utils/stripe-helper";
 
 const PaymentMethodSelector = props => {
   const setPaymentMethod = ev => {
@@ -19,13 +20,11 @@ const PaymentMethodSelector = props => {
           <option value="Choose a Payment Method" disabled hidden>
             Choose a Payment Method
           </option>
-          <option value="bancontact">Bancontact</option>
-          <option value="card">Card</option>
-          <option value="eps">EPS</option>
-          <option value="giropay">Giropay</option>
-          <option value="klarna">Klarna</option>
-          <option value="p24">Przelewy24</option>
-          <option value="sofort">SOFORT</option>
+          {Object.keys(paymentMethodMap).map(paymentMethod => (
+            <option value={paymentMethod}>
+              {paymentMethodMap[paymentMethod]}
+            </option>
+          ))}
         </select>
       </div>
     </div>
