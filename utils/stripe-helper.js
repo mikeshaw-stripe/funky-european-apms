@@ -114,21 +114,21 @@ export const confirmPayment = async (
         }
       }
       break;
-    case "sofort":
-      {
-        const { error } = await stripe.confirmSofortPayment(clientSecret, {
-          payment_method: {
-            country: {
-              country: "DE"
-            }
-          },
-          return_url: `${window.location.origin}`
-        });
-        if (error) {
-          throw new StripeError(error);
-        }
-      }
-      break;
+    // case "sofort":
+    //   {
+    //     const { error } = await stripe.confirmSofortPayment(clientSecret, {
+    //       payment_method: {
+    //         country: {
+    //           country: "DE"
+    //         }
+    //       },
+    //       return_url: `${window.location.origin}`
+    //     });
+    //     if (error) {
+    //       throw new StripeError(error);
+    //     }
+    //   }
+    //   break;
     default:
       // Throw an error if the paymentMethod is not recognised
       throw new UnknownPaymentMethodError(
