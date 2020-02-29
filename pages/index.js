@@ -18,7 +18,6 @@ export default function Index() {
               <header className="sr-header">
                 <div className="sr-header__logo" />
               </header>
-
               <CheckoutForm />
             </div>
             <ImageStack />

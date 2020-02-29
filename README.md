@@ -1,4 +1,4 @@
-This is a Stripe Sample showing how to accept Bancontact payments using Stripe's PaymentIntents API.
+This is a Stripe Sample showing how to accept different european payment methods using Stripe's PaymentIntents API.
 
 ## Getting Started
 
@@ -30,4 +30,5 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Learn More
 
-Bancontact is in beta. You can read the documentation [here](https://stripe.com/docs/payments/bancontact)
+Some of these payment methods are in beta. But to read more about acception local payment
+methods on Stripe you can read the documentation [here](https://stripe.com/docs/payments/local-payment-methods)

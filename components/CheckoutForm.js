@@ -41,11 +41,16 @@ const CheckoutForm = props => {
           `/api/retrievePaymentIntent/${paymentIntentId}`
         );
         const paymentIntentObj = await res.json();
-        setMetadata(paymentIntentObj);
+
+        if (paymentIntentObj.status === "succeeded") {
+          setMetadata(paymentIntentObj);
+          setSucceeded(true);
+        } else {
+          setError(paymentIntentObj.last_payment_error.message);
+        }
       };
 
       retrievePaymentIntent();
-      setSucceeded(true);
     }
   }, [paymentIntent]);
 
@@ -104,6 +109,9 @@ const CheckoutForm = props => {
       <pre className="sr-callout">
         <code>{JSON.stringify(metadata, null, 2)}</code>
       </pre>
+      <button onClick={() => (window.location.href = window.location.origin)}>
+        Back
+      </button>
     </div>
   );
 

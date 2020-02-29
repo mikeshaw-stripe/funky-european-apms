@@ -6,7 +6,8 @@ const stripePromise = loadStripe(process.env.STRIPE_PUBLISHABLE_KEY, {
     "bancontact_pm_beta_1",
     "eps_pm_beta_1",
     "giropay_pm_beta_1",
-    "p24_pm_beta_1"
+    "p24_pm_beta_1",
+    "sofort_pm_beta_1"
   ]
 });
 
