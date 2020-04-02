@@ -15,7 +15,7 @@ const Success = props => {
 
       {props.paymentIntentObj.status === "processing" ? (
         <p>
-          You checked out using an asyncronous payment method.
+          You checked out using an asynchronous payment method.
           <br /> <br />
           In order to be notified when the payment succeeds, you should
           integrate{" "}
