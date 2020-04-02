@@ -1,10 +1,12 @@
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-const utils = require("../../utils/stripe-helper");
+import Stripe from "stripe";
+import isValidPaymentMethod from "../../utils";
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export default async (req, res) => {
   if (req.method == "POST") {
     const paymentMethod = req.body.paymentMethod;
-    if (utils.isValidPaymentMethod(paymentMethod)) {
+    if (isValidPaymentMethod(paymentMethod)) {
+      // Create the PI using Stripe
       const paymentIntent = await stripe.paymentIntents.create({
         amount: 9900,
         currency: "eur",

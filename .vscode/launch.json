@@ -2,6 +2,13 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Stripe: Webhooks Forward",
+      "type": "stripe",
+      "request": "launch",
+      "command": "listen",
+      "localUrl": "http://localhost:3000/api/webhook"
+    },
+    {
       "type": "chrome",
       "request": "launch",
       "name": "Next: Chrome",
@@ -20,8 +27,12 @@
   ],
   "compounds": [
     {
-      "name": "Next: Full",
-      "configurations": ["Next: Node", "Next: Chrome"]
+      "name": "Next: Full + Stripe",
+      "configurations": [
+        "Next: Node",
+        "Next: Chrome",
+        "Stripe: Webhooks Forward"
+      ]
     }
   ]
 }

@@ -1,5 +1,10 @@
-import React, { Component, useState, useEffect } from "react";
-import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
+import React, { useState, useEffect } from "react";
+import {
+  useStripe,
+  useElements,
+  CardElement,
+  IdealBankElement
+} from "@stripe/react-stripe-js";
 import fetch from "unfetch";
 import queryString from "query-string";
 import PaymentMethodSelector from "./PaymentMethodSelector";
@@ -7,10 +12,11 @@ import {
   getPaymentMethodDisplayName,
   confirmPayment
 } from "../utils/stripe-helper";
+import Success from "./Success";
 
 const CheckoutForm = props => {
   // Set some state
-  const [metadata, setMetadata] = useState(null);
+  const [successObj, setSuccessObj] = useState(null);
   const [disabled, setDisabled] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState(null);
   const [paymentIntent, setPaymentIntent] = useState(null);
@@ -42,8 +48,11 @@ const CheckoutForm = props => {
         );
         const paymentIntentObj = await res.json();
 
-        if (paymentIntentObj.status === "succeeded") {
-          setMetadata(paymentIntentObj);
+        if (
+          paymentIntentObj.status === "succeeded" ||
+          paymentIntentObj.status === "processing"
+        ) {
+          setSuccessObj(paymentIntentObj);
           setSucceeded(true);
         } else {
           setError(paymentIntentObj.last_payment_error.message);
@@ -68,14 +77,9 @@ const CheckoutForm = props => {
       body: JSON.stringify({ paymentMethod: paymentMethod })
     });
 
-    const paymentIntentObj = await res.json();
+    if (res.ok) {
+      const paymentIntentObj = await res.json();
 
-    // Check the serverless backened didn't throw an error
-    if (paymentIntentObj.error) {
-      setError(paymentIntentObj.error);
-      setDisabled(false);
-      setProcessing(false);
-    } else {
       /* Rather than having every single Stripe.js call here for all payment methods
       I am using a helper function in ../utils/stripe-helper.js to give a single 
       "confirmPayment" interface */
@@ -98,22 +102,17 @@ const CheckoutForm = props => {
         setError(err.message);
         setDisabled(false);
         setProcessing(false);
+        return;
       }
+    } else {
+      setError(paymentIntentObj.json().error);
+      setDisabled(false);
+      setProcessing(false);
+      return;
     }
   };
 
-  const renderSuccess = () => (
-    <div className="sr-field-success message">
-      <h1>Your test payment succeeded</h1>
-      <p>View PaymentIntent response:</p>
-      <pre className="sr-callout">
-        <code>{JSON.stringify(metadata, null, 2)}</code>
-      </pre>
-      <button onClick={() => (window.location.href = window.location.origin)}>
-        Back
-      </button>
-    </div>
-  );
+  const renderSuccess = () => <Success paymentIntentObj={successObj} />;
 
   const renderForm = () => {
     let style = {
@@ -149,6 +148,15 @@ const CheckoutForm = props => {
           {paymentMethod === "card" && (
             <div className="sr-combo-inputs-row">
               <CardElement className="sr-input sr-card-element" style={style} />
+            </div>
+          )}
+          {/* Only show the iDEAL Element if the selected payment method is 'ideal' */}
+          {paymentMethod === "ideal" && (
+            <div className="sr-combo-inputs-row">
+              <IdealBankElement
+                className="sr-input sr-card-element"
+                style={style}
+              />
             </div>
           )}
         </div>

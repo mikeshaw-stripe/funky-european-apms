@@ -1,4 +1,9 @@
-import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
+import {
+  useStripe,
+  useElements,
+  CardElement,
+  IdealBankElement
+} from "@stripe/react-stripe-js";
 
 // Creat some custom errors for if things go wrong
 class StripeError extends Error {}
@@ -11,7 +16,8 @@ export const paymentMethodMap = {
   eps: "EPS",
   giropay: "Giropay",
   p24: "Przelewy24",
-  sofort: "SOFORT"
+  sofort: "SOFORT",
+  ideal: "iDEAL"
 };
 
 // Map for looking up Text for Payment Methods
@@ -114,21 +120,38 @@ export const confirmPayment = async (
         }
       }
       break;
-    // case "sofort":
-    //   {
-    //     const { error } = await stripe.confirmSofortPayment(clientSecret, {
-    //       payment_method: {
-    //         country: {
-    //           country: "DE"
-    //         }
-    //       },
-    //       return_url: `${window.location.origin}`
-    //     });
-    //     if (error) {
-    //       throw new StripeError(error);
-    //     }
-    //   }
-    //   break;
+    case "sofort":
+      {
+        const { error } = await stripe.confirmSofortPayment(clientSecret, {
+          payment_method: {
+            sofort: {
+              country: "DE"
+            }
+          },
+          return_url: `${window.location.origin}`
+        });
+        if (error) {
+          throw new StripeError(error);
+        }
+      }
+      break;
+    case "ideal":
+      {
+        const { error } = await stripe.confirmIdealPayment(clientSecret, {
+          payment_method: {
+            ideal: elements.getElement(IdealBankElement),
+            billing_details: {
+              name: "Jenny Rosen"
+            }
+          },
+          return_url: `${window.location.origin}`
+        });
+
+        if (error) {
+          throw new StripeError(error);
+        }
+      }
+      break;
     default:
       // Throw an error if the paymentMethod is not recognised
       throw new UnknownPaymentMethodError(

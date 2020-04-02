@@ -1,6 +1,8 @@
 {
   "env": {
-    "STRIPE_SECRET_KEY": "@stripe_secret_key"
+    "STRIPE_SECRET_KEY": "@stripe_secret_key",
+    "FAUNA_DB_KEY": "@fauna_db_key",
+    "STRIPE_WEBHOOK_SECRET_KEY": "@stripe_webhook_secret_key"
   },
   "build": {
     "env": {
